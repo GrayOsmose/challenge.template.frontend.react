@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import { Link } from 'react-router-dom';
 import { Layout, Menu, Icon } from 'antd';
-import { updateCollapsed, updateSelection } from './side-menu.actions';
+import { updateCollapsed } from './side-menu.actions';
 
 const { Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
-const SideMenu = ({ dispatch, collapsed, selected }) => (
+const SideMenu = ({ dispatch, collapsed, location: { pathname } }) => (
   <Sider
     collapsible
     collapsed={collapsed}
@@ -18,12 +19,10 @@ const SideMenu = ({ dispatch, collapsed, selected }) => (
     <div className="logo" />
     <Menu
       theme="dark"
-      selected={selected}
-      defaultSelectedKeys={['home']}
-      onSelect={({ key }) => dispatch(updateSelection(key)) }
+      selectedKeys={[pathname]}
       mode="inline"
     >
-      <Menu.Item key="home">
+      <Menu.Item key="/">
         <Link to="/">
           <div>
             <Icon type="home" />
@@ -35,8 +34,8 @@ const SideMenu = ({ dispatch, collapsed, selected }) => (
         key="sub1"
         title={<span><Icon type="idcard" /><span>routes</span></span>}
       >
-        <Menu.Item key="first"><Link to="/first">first</Link></Menu.Item>
-        <Menu.Item key="second"><Link to="/second">second</Link></Menu.Item>
+        <Menu.Item key="/first"><Link to="/first">first</Link></Menu.Item>
+        <Menu.Item key="/second"><Link to="/second">second</Link></Menu.Item>
       </SubMenu>
     </Menu>
   </Sider>
@@ -45,20 +44,16 @@ const SideMenu = ({ dispatch, collapsed, selected }) => (
 SideMenu.propTypes = {
   dispatch: PropTypes.func.isRequired,
   collapsed: PropTypes.bool.isRequired,
-  selected: PropTypes.string,
 };
 
 SideMenu.defaultProps = {
   dispatch: () => {},
   collapsed: false,
-  selected: null,
 };
 
-export default connect(({
+export default withRouter(connect(({
   sideMenu: {
     collapsed,
-    selected,
   } }) => ({
   collapsed,
-  selected,
-}))(SideMenu);
+}))(SideMenu));
